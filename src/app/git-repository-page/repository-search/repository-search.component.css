@@ -1,0 +1,13 @@
+.search-input {
+    display: flex;
+    flex-direction: column;    
+}
+
+.input-container {
+    display: flex;
+    flex-shrink: 1;
+}
+
+input{
+    flex-grow: 1;
+}

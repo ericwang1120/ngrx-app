@@ -2,11 +2,11 @@ import { TestBed } from '@angular/core/testing';
 import { Actions } from '@ngrx/effects';
 import { cold, hot, getTestScheduler } from 'jasmine-marbles';
 import { empty } from 'rxjs/observable/empty';
-import { GitUserEffects, LOAD_SCHEDULER, LOAD_DEBOUNCE } from './git-user';
-import { GitUserService } from '../services/git-user';
+import { GitRepositoryEffects, LOAD_SCHEDULER, LOAD_DEBOUNCE } from './git-repository';
+import { GitRepositoryService } from '../services/git-repository';
 import { Observable } from 'rxjs/Observable';
-import { Load, LoadSuccess, LoadFail } from '../actions/git-user';
-import { GitUser, generateMockGitUser } from '../models/git-user';
+import { Load, LoadSuccess, LoadFail } from '../actions/git-repository';
+import { GitRepository, generateMockGitRepository } from '../models/git-repository';
 
 export class TestActions extends Actions {
     constructor() {
@@ -22,18 +22,18 @@ export function getActions() {
     return new TestActions();
 }
 
-describe('GitUserEffects', () => {
-    let effects: GitUserEffects;
-    let gitUserService: any;
+describe('GitRepositoryEffects', () => {
+    let effects: GitRepositoryEffects;
+    let gitRepositoryService: any;
     let actions$: TestActions;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
-                GitUserEffects,
+                GitRepositoryEffects,
                 {
-                    provide: GitUserService,
-                    useValue: jasmine.createSpyObj('gitUserService', ['load']),
+                    provide: GitRepositoryService,
+                    useValue: jasmine.createSpyObj('gitRepositoryService', ['load']),
                 },
                 { provide: Actions, useFactory: getActions },
                 { provide: LOAD_SCHEDULER, useFactory: getTestScheduler },
@@ -41,36 +41,36 @@ describe('GitUserEffects', () => {
             ],
         });
 
-        effects = TestBed.get(GitUserEffects);
-        gitUserService = TestBed.get(GitUserService);
+        effects = TestBed.get(GitRepositoryEffects);
+        gitRepositoryService = TestBed.get(GitRepositoryService);
         actions$ = TestBed.get(Actions);
     });
 
     describe('load$', () => {
         it('should load successful', () => {
-            const gitUser1 = generateMockGitUser();
-            const gitUser2 = { ...gitUser1, id: '222' };
-            const gitUsers = [gitUser2, gitUser2];
+            const gitRepository1 = generateMockGitRepository();
+            const gitRepository2 = { ...gitRepository1, id: '222' };
+            const gitRepositories = [gitRepository2, gitRepository2];
 
-            const action = new Load();
-            const completion = new LoadSuccess(gitUsers);
+            const action = new Load('userName');
+            const completion = new LoadSuccess(gitRepositories);
 
             actions$.stream = hot('-a----', { a: action });
-            const response = cold('-a|', { a: gitUsers });
+            const response = cold('-a|', { a: gitRepositories });
             const expected = cold('-----b', { b: completion });
-            gitUserService.load = () => response;
+            gitRepositoryService.load = () => response;
             expect(effects.load$).toBeObservable(expected);
         });
 
         it('should load fail', () => {
-            const action = new Load();
+            const action = new Load('userName');
             const completion = new LoadFail('Unexpected Error. Try again later.');
             const error = 'Unexpected Error. Try again later.';
 
             actions$.stream = hot('-a----', { a: action });
             const response = cold('-#|', {}, error);
             const expected = cold('-----b', { b: completion });
-            gitUserService.load = () => response;
+            gitRepositoryService.load = () => response;
 
             expect(effects.load$).toBeObservable(expected);
         });

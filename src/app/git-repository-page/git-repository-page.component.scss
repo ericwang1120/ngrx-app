@@ -1,0 +1,13 @@
+.repository-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+app-repository-search {
+    width: 50%;
+}
+
+app-repository-display {
+    width: 50%;
+}

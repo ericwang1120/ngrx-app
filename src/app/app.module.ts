@@ -28,6 +28,10 @@ import { CustomRouterStateSerializer } from './core/ngrx/utils';
     StoreModule.forRoot(reducers, { metaReducers }),
     StoreRouterConnectingModule,
     EffectsModule.forRoot([]),
+    // Note that you must instrument after importing StoreModule
+    StoreDevtoolsModule.instrument({
+      maxAge: 25 //  Retains last 25 states
+    })
   ],
   providers: [
     { provide: RouterStateSerializer, useClass: CustomRouterStateSerializer },

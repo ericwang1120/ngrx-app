@@ -1,44 +1,44 @@
 import { createSelector } from '@ngrx/store';
-import { GitUser, generateMockGitUser } from '../models/git-user';
-import * as gitUser from '../actions/git-user';
+import { GitRepository, generateMockGitRepository } from '../models/git-repository';
+import * as gitRepository from '../actions/git-repository';
 
 export interface State {
     loaded: boolean;
     loading: boolean;
-    gitUsers: GitUser[];
+    gitRepositories: GitRepository[];
 }
 
 export const initialState: State = {
     loaded: false,
     loading: false,
-    gitUsers: [],
+    gitRepositories: [],
 };
 
 export function reducer(
     state = initialState,
-    action: gitUser.Actions
+    action: gitRepository.Actions
 ): State {
     switch (action.type) {
-        case gitUser.LOAD: {
+        case gitRepository.LOAD: {
             return {
                 ...state,
                 loading: true,
             };
         }
 
-        case gitUser.LOAD_SUCCESS: {
+        case gitRepository.LOAD_SUCCESS: {
             return {
                 loaded: true,
                 loading: false,
-                gitUsers: action.payload,
+                gitRepositories: action.payload,
             };
         }
 
-        case gitUser.LOAD_FAIL: {
+        case gitRepository.LOAD_FAIL: {
             return {
                 loaded: true,
                 loading: false,
-                gitUsers: [],
+                gitRepositories: [],
             };
         }
 
@@ -52,4 +52,4 @@ export const getLoaded = (state: State) => state.loaded;
 
 export const getLoading = (state: State) => state.loading;
 
-export const getGitUsers = (state: State) => state.gitUsers;
+export const getGitRepositories = (state: State) => state.gitRepositories;

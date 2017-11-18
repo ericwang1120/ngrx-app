@@ -9,9 +9,9 @@ import { Observable } from 'rxjs/Observable';
 import { Scheduler } from 'rxjs/Scheduler';
 import { async } from 'rxjs/scheduler/async';
 import { of } from 'rxjs/observable/of';
-import { GitUserService } from '../services/git-user';
+import { GitRepositoryService } from '../services/git-repository';
 
-import * as gitUser from '../actions/git-user';
+import * as gitRepository from '../actions/git-repository';
 
 export const LOAD_DEBOUNCE = new InjectionToken<number>('Load Debounce');
 export const LOAD_SCHEDULER = new InjectionToken<Scheduler>(
@@ -19,21 +19,22 @@ export const LOAD_SCHEDULER = new InjectionToken<Scheduler>(
 );
 
 @Injectable()
-export class GitUserEffects {
+export class GitRepositoryEffects {
     @Effect()
     public load$: Observable<Action> = this.actions$
-        .ofType<gitUser.Load>(gitUser.LOAD)
-        .debounceTime(this.debounce || 300, this.scheduler || async)
-        .switchMap(() => {
-            return this.gitUserService
-                .load()
-                .map((result) => new gitUser.LoadSuccess(result))
-                .catch((err) => of(new gitUser.LoadFail(err)));
+        .ofType<gitRepository.Load>(gitRepository.LOAD)
+        .debounceTime(this.debounce || 1000, this.scheduler || async)
+        .map((action) => action.payload)
+        .switchMap((payload) => {
+            return this.gitRepositoryService
+                .load(payload)
+                .map((result) => new gitRepository.LoadSuccess(result))
+                .catch((err) => of(new gitRepository.LoadFail(err)));
         });
 
     constructor(
         private actions$: Actions,
-        private gitUserService: GitUserService,
+        private gitRepositoryService: GitRepositoryService,
         @Optional()
         @Inject(LOAD_DEBOUNCE)
         private debounce,

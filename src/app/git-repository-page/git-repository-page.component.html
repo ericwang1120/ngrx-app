@@ -1,0 +1,4 @@
+<div class="repository-container">
+    <app-repository-search (submit)="submit($event)" [userName]="userName"></app-repository-search>
+    <app-repository-display [loading]="loading$|async" [gitRepositories]="gitRepositories$|async"></app-repository-display>
+</div>

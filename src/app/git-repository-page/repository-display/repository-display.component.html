@@ -1,0 +1,11 @@
+<ul *ngIf="!loading">
+  <li *ngFor="let gitRepository of gitRepositories">
+    <a href="{{gitRepository.html_url}}">
+      {{gitRepository.name}}
+    </a>
+  </li>
+</ul>
+
+<div *ngIf="loading">
+  Loading...
+</div>
